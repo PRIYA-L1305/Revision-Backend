@@ -1,6 +1,8 @@
 package com.revision.controller;
 
 import com.revision.model.Topic;
+import com.revision.scheduler.RevisionScheduler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -12,6 +14,9 @@ import java.util.List;
 @RestController
 public class TestController {
 
+    @Autowired
+    private RevisionScheduler revisionScheduler;
+
     private List<Topic> topics = new ArrayList<>();
 
     @GetMapping("/hello")
@@ -22,6 +27,7 @@ public class TestController {
     @PostMapping("/topics")
     public void addTopic(@RequestBody Topic topic) {
         topics.add(topic);
+        revisionScheduler.setTopics(topics);
     }
 
     @GetMapping("/topics")
