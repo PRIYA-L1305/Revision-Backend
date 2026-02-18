@@ -1,6 +1,8 @@
 package com.revision.scheduler;
 
 import com.revision.model.Topic;
+import com.revision.repository.TopicRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -11,14 +13,14 @@ import java.util.Random;
 public class RevisionScheduler {
     private List<Topic> topics;
 
-    // TEMP setter (we'll improve later)
-    public void setTopics(List<Topic> topics) {
-        this.topics = topics;
-    }
+    @Autowired
+    TopicRepository topicRepository;
 
     @Scheduled(fixedRate = 60000) // every 1 minute
     public void runRevision() {
-        if (topics == null || topics.isEmpty()) {
+        List<Topic> topics = topicRepository.findAll();
+
+        if (topics.isEmpty()) {
             System.out.println("No topics available for revision.");
             return;
         }

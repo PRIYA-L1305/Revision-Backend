@@ -1,11 +1,11 @@
 package com.revision.controller;
 
 import com.revision.model.Topic;
+import com.revision.repository.TopicRepository;
 import com.revision.scheduler.RevisionScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins ={"http://localhost:5500",
@@ -17,7 +17,8 @@ public class TestController {
     @Autowired
     private RevisionScheduler revisionScheduler;
 
-    private List<Topic> topics = new ArrayList<>();
+    @Autowired
+    private TopicRepository topicRepository;
 
     @GetMapping("/hello")
     public String hello() {
@@ -26,12 +27,11 @@ public class TestController {
 
     @PostMapping("/topics")
     public void addTopic(@RequestBody Topic topic) {
-        topics.add(topic);
-        revisionScheduler.setTopics(topics);
+        topicRepository.save(topic);
     }
 
     @GetMapping("/topics")
     public List<Topic> getTopics() {
-        return topics;
+        return topicRepository.findAll();
     }
 }
