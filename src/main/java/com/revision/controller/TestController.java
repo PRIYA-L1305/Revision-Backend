@@ -1,5 +1,6 @@
 package com.revision.controller;
 
+import com.revision.ai.OpenAiService;
 import com.revision.model.Topic;
 import com.revision.repository.TopicRepository;
 import com.revision.scheduler.RevisionScheduler;
@@ -19,6 +20,14 @@ public class TestController {
 
     @Autowired
     private TopicRepository topicRepository;
+
+    @Autowired
+    private OpenAiService openAIService;
+
+    @GetMapping("/generate")
+    public String generateTestMCQ() {
+        return openAIService.generateMCQ("Java Streams", "medium");
+    }
 
     @GetMapping("/hello")
     public String hello() {
