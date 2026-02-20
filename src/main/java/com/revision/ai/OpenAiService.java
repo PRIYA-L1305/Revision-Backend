@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class OpenAiService {
 
@@ -33,14 +36,16 @@ public class OpenAiService {
         <only letter>
         """.formatted(topic, difficulty);
 
-        String requestBody = """
-        {
-          "model": "gpt-4o-mini",
-          "messages": [
-            {"role": "user", "content": "%s"}
-          ]
-        }
-        """.formatted(prompt);
+        Map<String, Object> message = Map.of(
+                "role", "user",
+                "content", prompt
+        );
+
+        Map<String, Object> requestBody = Map.of(
+                "model", "gpt-4o-mini",
+                "messages", List.of(message)
+        );
+
 
         return webClient.post()
                 .uri("/chat/completions")
