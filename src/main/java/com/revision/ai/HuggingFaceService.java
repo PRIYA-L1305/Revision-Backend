@@ -14,7 +14,7 @@ public class HuggingFaceService {
     private String apiKey;
 
     private final WebClient webClient =
-            WebClient.create("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2");
+            WebClient.create("https://api-inference.huggingface.co/models/google/flan-t5-large");
 
     public String generateMCQ(String topic, String difficulty) {
 
@@ -38,7 +38,10 @@ public class HuggingFaceService {
                 """.formatted(topic, difficulty);
 
         Map<String, Object> requestBody = Map.of(
-                "inputs", prompt
+                "inputs", prompt,
+                "parameters", Map.of(
+                        "max_new_tokens", 300
+                )
         );
 
         return webClient.post()
