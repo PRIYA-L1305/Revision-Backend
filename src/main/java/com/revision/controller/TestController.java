@@ -50,7 +50,7 @@ public class TestController {
 
     @GetMapping("/send-test")
     public String testWhatsApp() {
-        whatsAppServices.sendMessage("Test message from Revision App 🚀");
+        whatsAppServices.sendMessage("Test message");
         return "Sent";
     }
 }

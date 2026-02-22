@@ -30,7 +30,7 @@ public class WhatsAppServices {
                 "text", Map.of("body", messageText)
         );
 
-        webClient.post()
+        String response = webClient.post()
                 .uri("/" + phoneId + "/messages")
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
@@ -38,5 +38,7 @@ public class WhatsAppServices {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+        System.out.println("WhatsApp API Response: " + response);
     }
 }
