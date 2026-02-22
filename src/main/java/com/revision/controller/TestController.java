@@ -4,6 +4,7 @@ import com.revision.ai.OpenRouterService;
 import com.revision.model.Topic;
 import com.revision.repository.TopicRepository;
 import com.revision.scheduler.RevisionScheduler;
+import com.revision.whatsapp.WhatsAppServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,9 @@ public class TestController {
     @Autowired
     private OpenRouterService aiService;
 
+    @Autowired
+    private WhatsAppServices whatsAppServices;
+
     @GetMapping("/generate")
     public String generateTestMCQ() {
         return aiService.generateMCQ("Java Streams", "medium");
@@ -42,5 +46,11 @@ public class TestController {
     @GetMapping("/topics")
     public List<Topic> getTopics() {
         return topicRepository.findAll();
+    }
+
+    @GetMapping("/send-test")
+    public String testWhatsApp() {
+        whatsAppServices.sendMessage("Test message from Revision App 🚀");
+        return "Sent";
     }
 }

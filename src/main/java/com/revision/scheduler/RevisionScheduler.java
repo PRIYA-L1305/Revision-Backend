@@ -1,7 +1,9 @@
 package com.revision.scheduler;
 
+import com.revision.ai.OpenRouterService;
 import com.revision.model.Topic;
 import com.revision.repository.TopicRepository;
+import com.revision.whatsapp.WhatsAppServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,16 +18,19 @@ public class RevisionScheduler {
     @Autowired
     TopicRepository topicRepository;
 
-    @Scheduled(fixedRate = 60000) // every 1 minute
+    @Autowired
+    private OpenRouterService openRouterService;
+
+    @Autowired
+    private WhatsAppServices whatsAppServices;
+
+    @Scheduled(fixedRate = 60000)  // 9am, 3pm, 9pm
     public void runRevision() {
-        List<Topic> topics = topicRepository.findAll();
 
-        if (topics.isEmpty()) {
-            System.out.println("No topics available for revision.");
-            return;
-        }
+        String mcq = openRouterService.generateMCQ("Java Streams", "medium");
 
-        Topic randomTopic = topics.get(new Random().nextInt(topics.size()));
-        System.out.println("🔔 Revision Topic: " + randomTopic.getName());
+        whatsAppServices.sendMessage(mcq);
+
+        System.out.println("Question sent to WhatsApp.");
     }
 }
