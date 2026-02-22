@@ -1,6 +1,6 @@
 package com.revision.controller;
 
-import com.revision.ai.HuggingFaceService;
+import com.revision.ai.OpenRouterService;
 import com.revision.model.Topic;
 import com.revision.repository.TopicRepository;
 import com.revision.scheduler.RevisionScheduler;
@@ -22,7 +22,7 @@ public class TestController {
     private TopicRepository topicRepository;
 
     @Autowired
-    private HuggingFaceService aiService;
+    private OpenRouterService aiService;
 
     @GetMapping("/generate")
     public String generateTestMCQ() {
