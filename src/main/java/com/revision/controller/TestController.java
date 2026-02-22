@@ -47,10 +47,4 @@ public class TestController {
     public List<Topic> getTopics() {
         return topicRepository.findAll();
     }
-
-    @GetMapping("/send-test")
-    public String testWhatsApp() {
-        whatsAppServices.sendMessage("Test message");
-        return "Sent";
-    }
 }
