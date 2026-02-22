@@ -24,7 +24,7 @@ public class RevisionScheduler {
     @Autowired
     private WhatsAppServices whatsAppServices;
 
-    @Scheduled(fixedRate = 60000) // Change to cron later
+    @Scheduled(cron = "0 0 9,15,21 * * ?") // Change to cron later
     public void runRevision() {
 
         try {
