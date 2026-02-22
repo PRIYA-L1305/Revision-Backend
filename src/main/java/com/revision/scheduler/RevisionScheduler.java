@@ -24,13 +24,13 @@ public class RevisionScheduler {
     @Autowired
     private WhatsAppServices whatsAppServices;
 
-    @Scheduled(fixedRate = 60000)  // 9am, 3pm, 9pm
+    @Scheduled(fixedRate = 60000)//cron = "0 0 * * * *")  // 9am, 3pm, 9pm
     public void runRevision() {
+        String fullMCQ = openRouterService.generateMCQ("Java Streams", "medium");
 
-        String mcq = openRouterService.generateMCQ("Java Streams", "medium");
+        // Remove answer part
+        String questionOnly = fullMCQ.split("ANSWER:")[0].trim();
 
-        whatsAppServices.sendMessage(mcq);
-
-        System.out.println("Question sent to WhatsApp.");
+        whatsAppServices.sendMessage(questionOnly);
     }
 }

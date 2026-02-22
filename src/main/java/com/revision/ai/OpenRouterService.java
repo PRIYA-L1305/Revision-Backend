@@ -1,6 +1,7 @@
 package com.revision.ai;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -43,20 +44,37 @@ public class OpenRouterService {
         );
 
         Map<String, Object> requestBody = Map.of(
-                "model", "mistralai/mistral-7b-instruct",  // free model
+                "model", "mistralai/mistral-7b-instruct",
                 "messages", List.of(message),
                 "max_tokens", 300,
                 "temperature", 0.7
         );
 
-        return webClient.post()
+        ParameterizedTypeReference<Map<String, Object>> typeRef =
+                new ParameterizedTypeReference<>() {};
+
+        Map<String, Object> response = webClient.post()
                 .header("Authorization", "Bearer " + apiKey)
                 .header("HTTP-Referer", "https://your-app.com")
                 .header("X-Title", "Revision App")
                 .header("Content-Type", "application/json")
                 .bodyValue(requestBody)
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(typeRef)
                 .block();
+
+        if (response == null || !response.containsKey("choices")) {
+            throw new RuntimeException("Invalid response from OpenRouter");
+        }
+
+        List<Map<String, Object>> choices =
+                (List<Map<String, Object>>) response.get("choices");
+
+        Map<String, Object> firstChoice = choices.get(0);
+
+        Map<String, Object> messageMap =
+                (Map<String, Object>) firstChoice.get("message");
+
+        return (String) messageMap.get("content");
     }
 }
