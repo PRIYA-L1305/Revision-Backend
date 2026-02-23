@@ -26,9 +26,9 @@ public class RevisionScheduler {
 
     private final Random random = new Random();
 
-    @Scheduled(cron="0 0 * * * *") // change to cron later
+    @Scheduled(cron="0 */5 * * * ?") // change to cron later
     public void runRevision() {
-
+        System.out.println("Running Revision Scheduler");
         try {
             long topicCount = topicRepository.count();
 

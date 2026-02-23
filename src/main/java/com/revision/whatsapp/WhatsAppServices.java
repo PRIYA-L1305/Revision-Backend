@@ -1,6 +1,7 @@
 package com.revision.whatsapp;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,6 +24,7 @@ public class WhatsAppServices {
             WebClient.create("https://graph.facebook.com/v18.0");
 
     public void sendMessage(String messageText) {
+        System.out.println("Sending message: ");
 
         Map<String, Object> requestBody = Map.of(
                 "messaging_product", "whatsapp",
@@ -37,6 +39,11 @@ public class WhatsAppServices {
                 .header("Content-Type", "application/json")
                 .bodyValue(requestBody)
                 .retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        clientResponse -> clientResponse.bodyToMono(String.class)
+                                .map(errorBody -> new RuntimeException("WhatsApp Error: " + errorBody))
+                )
                 .bodyToMono(String.class)
                 .block();
 

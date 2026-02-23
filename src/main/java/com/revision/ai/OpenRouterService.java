@@ -18,6 +18,7 @@ public class OpenRouterService {
             WebClient.create("https://openrouter.ai/api/v1/chat/completions");
 
     public String generateMCQ(String topic, String difficulty) {
+        System.out.println("Generating MCQ");
 
         String prompt = """
         Generate ONE multiple choice question from topic: %s.
