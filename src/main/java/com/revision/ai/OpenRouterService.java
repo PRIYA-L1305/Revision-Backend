@@ -35,7 +35,7 @@ public class OpenRouterService {
         D) ...
 
         ANSWER:
-        <only letter>
+        <correct option letter and full answer text>
         """.formatted(topic, difficulty);
 
         Map<String, Object> message = Map.of(
@@ -75,6 +75,6 @@ public class OpenRouterService {
         Map<String, Object> messageMap =
                 (Map<String, Object>) firstChoice.get("message");
 
-        return (String) messageMap.get("content");
+        return ((String) messageMap.get("content")).trim();
     }
 }

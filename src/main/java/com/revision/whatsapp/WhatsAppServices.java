@@ -22,31 +22,16 @@ public class WhatsAppServices {
     private final WebClient webClient =
             WebClient.create("https://graph.facebook.com/v18.0");
 
-    public void sendPoll(String question,
-                         String optionA,
-                         String optionB,
-                         String optionC,
-                         String optionD) {
-
-        Map<String, Object> poll = Map.of(
-                "name", question,
-                "options", List.of(
-                        Map.of("name", optionA),
-                        Map.of("name", optionB),
-                        Map.of("name", optionC),
-                        Map.of("name", optionD)
-                ),
-                "multiple_answers", false
-        );
+    public void sendMessage(String messageText) {
 
         Map<String, Object> requestBody = Map.of(
                 "messaging_product", "whatsapp",
                 "to", to,
-                "type", "poll",
-                "poll", poll
+                "type", "text",
+                "text", Map.of("body", messageText)
         );
 
-        webClient.post()
+        String response = webClient.post()
                 .uri("/" + phoneId + "/messages")
                 .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
@@ -54,5 +39,7 @@ public class WhatsAppServices {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+        System.out.println("WhatsApp API Response: " + response);
     }
 }

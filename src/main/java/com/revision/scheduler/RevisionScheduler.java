@@ -13,7 +13,7 @@ import java.util.Random;
 
 @Component
 public class RevisionScheduler {
-    private List<Topic> topics;
+    private List<String> difficulty = List.of("Easy", "Medium", "Hard");;
 
     @Autowired
     TopicRepository topicRepository;
@@ -24,48 +24,38 @@ public class RevisionScheduler {
     @Autowired
     private WhatsAppServices whatsAppServices;
 
-    @Scheduled(cron = "0 0 9,15,21 * * ?") // Change to cron later
+    private final Random random = new Random();
+
+    @Scheduled(cron="0 0 * * * *") // change to cron later
     public void runRevision() {
 
         try {
-            String fullMCQ = openRouterService.generateMCQ("Java Streams", "medium");
+            long topicCount = topicRepository.count();
 
-            if (fullMCQ == null || !fullMCQ.contains("OPTIONS:") || !fullMCQ.contains("ANSWER:")) {
-                System.out.println("Invalid MCQ format received from AI.");
+            if (topicCount == 0) {
+                System.out.println("No topics available for revision.");
                 return;
             }
 
-            String question = fullMCQ.split("OPTIONS:")[0]
-                    .replace("QUESTION:", "")
-                    .trim();
+            // Get all topics and pick random
+            List<Topic> topics = topicRepository.findAll();
+            Topic randomTopic = topics.get(random.nextInt(topics.size()));
 
-            String optionsBlock = fullMCQ.split("OPTIONS:")[1]
-                    .split("ANSWER:")[0]
-                    .trim();
+            String difficultyLevel = difficulty.get(random.nextInt(difficulty.size()));
 
-            String answer = fullMCQ.split("ANSWER:")[1].trim();
-
-            String[] options = optionsBlock.split("\n");
-
-            if (options.length < 4) {
-                System.out.println("AI did not return 4 options.");
-                return;
-            }
-
-            String optionA = options[0].replace("A)", "").trim();
-            String optionB = options[1].replace("B)", "").trim();
-            String optionC = options[2].replace("C)", "").trim();
-            String optionD = options[3].replace("D)", "").trim();
-
-            whatsAppServices.sendPoll(
-                    question,
-                    optionA,
-                    optionB,
-                    optionC,
-                    optionD
+            String fullMCQ = openRouterService.generateMCQ(
+                    randomTopic.getName(),
+                    difficultyLevel
             );
 
-            System.out.println("Poll sent successfully.");
+            String formattedMessage = "🧠 *Revision Time!*\n\n" + fullMCQ;
+            if (formattedMessage.length() > 3500) {
+                formattedMessage = formattedMessage.substring(0, 3500);
+            }
+
+            whatsAppServices.sendMessage(formattedMessage);
+
+            System.out.println("Revision question sent successfully.");
 
         } catch (Exception e) {
             System.out.println("Error during scheduled revision:");
