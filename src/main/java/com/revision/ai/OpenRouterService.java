@@ -21,10 +21,13 @@ public class OpenRouterService {
         System.out.println("Generating MCQ");
 
         String prompt = """
-        Generate ONE multiple choice question from topic: %s.
+        Generate FIVE multiple choice question from topic: %s.
         Difficulty: %s.
 
         Format EXACTLY like this:
+        
+        TOPIC: %s
+        DIFFICULTY LEVEL:%s
 
         QUESTION:
         <question text>
@@ -37,7 +40,7 @@ public class OpenRouterService {
 
         ANSWER:
         <correct option letter and full answer text>
-        """.formatted(topic, difficulty);
+        """.formatted(topic, difficulty,topic, difficulty);
 
         Map<String, Object> message = Map.of(
                 "role", "user",
