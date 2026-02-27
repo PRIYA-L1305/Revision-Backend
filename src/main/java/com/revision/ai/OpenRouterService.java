@@ -21,7 +21,7 @@ public class OpenRouterService {
         System.out.println("Generating MCQ");
 
         String prompt = """
-        Generate FIVE multiple choice question from topic: %s.
+        Generate TWO multiple choice question from topic: %s.
         Difficulty: %s.
 
         Format EXACTLY like this:
